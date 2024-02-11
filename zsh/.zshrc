@@ -8,6 +8,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+# ZSH_THEME="agnoster"
 ZSH_THEME="robbyrussell"
 
 # Set list of themes to pick from when loading at random
@@ -17,7 +18,7 @@ ZSH_THEME="robbyrussell"
 # ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
 
 # Uncomment the following line to use case-sensitive completion.
-CASE_SENSITIVE="true"
+# CASE_SENSITIVE="true"
 
 # Uncomment the following line to use hyphen-insensitive completion.
 # Case-sensitive completion must be off. _ and - will be interchangeable.
@@ -35,7 +36,7 @@ CASE_SENSITIVE="true"
 # DISABLE_MAGIC_FUNCTIONS="true"
 
 # Uncomment the following line to disable colors in ls.
- DISABLE_LS_COLORS="true"
+# DISABLE_LS_COLORS="true"
 
 # Uncomment the following line to disable auto-setting terminal title.
 # DISABLE_AUTO_TITLE="true"
@@ -71,8 +72,9 @@ CASE_SENSITIVE="true"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
- 
+
 source $ZSH/oh-my-zsh.sh
+source ~/.zshrc_profile
 
 # User configuration
 
@@ -99,12 +101,39 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-#
-#
-#
-#
-############### My files ################
+alias open="xdg-open"
+alias vim="nvim"
 
-#export PATH="$HOME/.local/bin:$PATH"
+alias sk="screenkey -p fixed -g 995x129+456+932 --bak-mode=normal"
 
-source ~/.zsh_profile
+xmodmap -e "clear Lock"
+cd personal
+
+###################### hold-on for push to master #############################
+holdon_message="
+     __          __    __             
+    / /_  ____  / /___/ /  ____  ____ 
+   / __ \/ __ \/ / __  /  / __ \/ __ \\
+  / / / / /_/ / / /_/ /  / /_/ / / / /
+ /_/ /_/\____/_/\__,_/   \____/_/ /_/                                       
+"
+###############################################################################
+function printc () {
+    if [[ ${1} =~ "master" || ${1} =~ "develop" ]]; then
+    	echo $holdon_message
+        echo "you are trying to execute: '${1}'"
+        echo -n "confirm that you know:"
+        read confirm_password
+        lowercase_pwd=$(echo "$confirm_password" | tr '[:upper:]' '[:lower:]')
+        if [[ "$lowercase_pwd" == "i know what i am doing" ]]; then
+            echo "executing ...\n"
+        else
+            echo "\nterminating prematurely ..."
+            zsh
+        fi
+    fi
+}
+
+autoload -Uz add-zsh-hook
+add-zsh-hook preexec printc
+###############################################################################
